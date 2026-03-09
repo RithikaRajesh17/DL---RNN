@@ -5,32 +5,32 @@ To develop a Recurrent Neural Network (RNN) model for predicting stock prices us
 
 ## Problem Statement and Dataset
 
+The problem addressed in this notebook is stock price prediction using a Recurrent Neural Network (RNN) model. Specifically, the goal is to develop a model that can predict future stock closing prices based on historical closing price data. The process involves:
+
+Loading and preprocessing historical stock data (training and testing sets).
+Normalizing the data and creating sequences for time series prediction.
+Defining and training an RNN model.
+Evaluating the model's performance by comparing its predictions against actual stock prices on an unseen test set.
 
 
 ## DESIGN STEPS
-### STEP 1: 
+### STEP 1:
+Load and normalize data, create sequences.
 
-Write your own steps
+### STEP 2:
+Convert data to tensors and set up DataLoader.
 
-### STEP 2: 
+### STEP 3:
+Define the RNN model architecture.
 
+### STEP 4:
+Summarize, compile with loss and optimizer.
 
+### STEP 5:
+Train the model with loss tracking.
 
-### STEP 3: 
-
-
-
-### STEP 4: 
-
-
-
-### STEP 5: 
-
-
-
-### STEP 6: 
-
-
+### STEP 6:
+Predict on test data, plot actual vs. predicted prices.
 
 
 
@@ -41,16 +41,46 @@ Write your own steps
 ### Register Number:
 
 ```python
-# Define RNN Model
+##  Define RNN Model
 class RNNModel(nn.Module):
-    # write your code here
+  def __init__(self,input_size=1,hidden_size=64,num_layers=2,output_size=1):
+    super(RNNModel,self).__init__()
+    self.rnn=nn.RNN(input_size,hidden_size,num_layers,batch_first=True)
+    self.fc=nn.Linear(hidden_size,output_size)
+  def forward(self,x):
+    out,_=self.rnn(x)
+    out=self.fc(out[:,-1,:])
+    return out  
 
 
 
 
 # Train the Model
 
-# Write your code here
+def train_model(model, train_loader,criterion,optimizer,epochs=20):
+  train_losses=[]
+  model.train()
+  for epoch in range(epochs):
+    total_loss=0
+    for x_batch,y_batch in train_loader:
+      x_batch,y_batch=x_batch.to(device),y_batch.to(device)
+      optimizer.zero_grad()
+      outputs=model(x_batch)
+      loss=criterion(outputs,y_batch)
+      loss.backward()
+      optimizer.step()
+      total_loss+=loss.item()
+    train_losses.append(total_loss/len(train_loader))
+    print(f"Epoch[{epoch+1}/{epochs}],Loss:{total_loss/len(train_loader):.4f}")
+  print('Name:Rithika R ')
+  print('Register Number:212224240136  ')
+  plt.plot(train_losses, label='Training Loss')
+  plt.xlabel('Epoch')
+  plt.ylabel('MSE Loss')
+  plt.title('Training Loss Over Epochs')
+  plt.legend()
+  plt.show() 
+train_model(model,train_loader,criterion,optimizer) 
 
 
 ```
@@ -59,14 +89,18 @@ class RNNModel(nn.Module):
 
 ## Training Loss Over Epochs Plot
 
-Include your plot here
+<img width="576" height="455" alt="image" src="https://github.com/user-attachments/assets/2f1f931d-42e3-46f2-9b22-ed947bca9a70" />
+
 
 ## True Stock Price, Predicted Stock Price vs time
 
-Include your plot here
+<img width="859" height="547" alt="image" src="https://github.com/user-attachments/assets/1fab8484-e3c8-4271-97e3-41a7a138f32c" />
+
 
 ### Predictions
-Include the predictions on test data
+<img width="314" height="68" alt="image" src="https://github.com/user-attachments/assets/7a0b8a23-22c8-4996-8912-502de573d352" />
+
+
 
 ## RESULT
-Include your result here
+This program has been executed succesfully.
